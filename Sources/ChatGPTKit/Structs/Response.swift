@@ -18,4 +18,11 @@ public struct Response: Identifiable, Hashable, Equatable, Codable {
         return lhs.id == rhs.id
     }
     
+    public init(id: String, object: String, created: Int, choices: [ResponseChoice], usage: APIUsage) {
+        self.id = id
+        self.object = object
+        self.created = created
+        self.choices = choices
+        self.usage = usage
+    }
 }
