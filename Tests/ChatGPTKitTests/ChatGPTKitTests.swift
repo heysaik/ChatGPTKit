@@ -10,7 +10,7 @@ final class ChatGPTKitTests: XCTestCase {
         let messages = [Message(role: .user, content: "Hello! How are you doing?")]
         switch try await chattyGPT.performCompletions(messages: messages) {
         case .success(let response):
-            print(response.choices?[0].message.content)
+            print(response.choices[0].message.content)
         case .failure(let error):
             print(error)
         }
