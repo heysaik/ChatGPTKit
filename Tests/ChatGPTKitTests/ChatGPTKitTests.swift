@@ -6,7 +6,7 @@ final class ChatGPTKitTests: XCTestCase {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        let chattyGPT = ChatGPTKit(apiKey: "")
+        let chattyGPT = ChatGPTKit(apiKey: "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")
         var messages = [Message(role: .user, content: "What's 2+2?")]
         switch try await chattyGPT.performCompletions(messages: messages) {
         case .success(let response):
