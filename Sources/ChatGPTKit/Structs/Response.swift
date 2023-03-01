@@ -8,7 +8,7 @@
 import Foundation
 
 public struct Response: Identifiable, Hashable, Equatable, Codable {
-    public var id: String
+    public var id: String?
     public var object: String
     public var created: Int
     public var choices: [ResponseChoice]
