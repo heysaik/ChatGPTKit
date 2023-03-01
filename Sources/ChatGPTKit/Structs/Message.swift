@@ -9,6 +9,6 @@ import Foundation
 
 // Structs
 public struct Message: Convertable, Hashable {
-    var role: Role
-    var content: String
+    public var role: Role
+    public var content: String
 }

@@ -36,10 +36,14 @@ public struct ChatGPTKit {
         case .success(let baseRequest):
             do {
                 let (data, _) = try await URLSession.shared.data(for: baseRequest)
-                let response = try JSONDecoder().decode(Response.self, from: data)
-                return .success(response)
+                do {
+                    let response = try JSONDecoder().decode(Response.self, from: data)
+                    return .success(response)
+                } catch {
+                    return .failure(APIError.failedToParseData)
+                }
             } catch {
-                return .failure(APIError.failedToParseData)
+                return .failure(APIError.failedToGetData)
             }
         case .failure(_):
             return .failure(APIError.requestCreationFailed)
@@ -57,6 +61,7 @@ public struct ChatGPTKit {
         case couldNotReadParameters
         case requestCreationFailed
         case failedToParseData
+        case failedToGetData
     }
     
     private func createRequest(with url: URL?, parameters: [String: Any]) async throws -> Result<URLRequest, Error> {

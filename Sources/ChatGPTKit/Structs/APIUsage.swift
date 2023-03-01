@@ -7,8 +7,8 @@
 
 import Foundation
 
-public struct APIUsage: Codable {
-    var prompt_tokens: Int
-    var completion_tokens: Int
-    var total_tokens: Int
+public struct APIUsage: Codable, Hashable {
+    public var prompt_tokens: Int
+    public var completion_tokens: Int
+    public var total_tokens: Int
 }
