@@ -40,10 +40,11 @@ public struct ChatGPTKit {
                     let response = try JSONDecoder().decode(Response.self, from: data)
                     return .success(response)
                 } catch {
-                    return .failure(APIError.failedToParseData)
+                    print(error)
+                    return .failure(error)
                 }
             } catch {
-                return .failure(APIError.failedToGetData)
+                return .failure(error)
             }
         case .failure(_):
             return .failure(APIError.requestCreationFailed)
