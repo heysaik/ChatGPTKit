@@ -36,6 +36,7 @@ enum Model {
 enum Role {
     case assistant
     case user
+    case system
 }
 ```
 
