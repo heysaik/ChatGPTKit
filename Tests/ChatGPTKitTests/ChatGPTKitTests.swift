@@ -7,7 +7,10 @@ final class ChatGPTKitTests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
         let chattyGPT = ChatGPTKit(apiKey: "")
-        let messages = [Message(role: .user, content: "Hello! How are you doing?")]
+        let messages = [
+            Message(role: .system, content: "You are a bot designed to aid mental health."),
+            Message(role: .user, content: "Hello! I'm feeling rather sad today.")
+        ]
         switch try await chattyGPT.performCompletions(messages: messages) {
         case .success(let response):
             print(response.choices[0].message.content)
