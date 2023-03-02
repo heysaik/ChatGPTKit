@@ -8,7 +8,7 @@
 import Foundation
 
 public enum Role: String, Codable {
-    case assistant = "assistant"
-    case user = "user"
     case system = "system"
+    case user = "user"
+    case assistant = "assistant"
 }
