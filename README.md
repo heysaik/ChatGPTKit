@@ -13,9 +13,10 @@ var history = [Message(role: .system, content: "You are a bot designed to aid me
 
 switch try await chattyGPT.performCompletions(messages: history) {
 case .success(let response):
-    let firstResponse = response.choices[0]
-    history.append(firstResponse.message)
-    print(firstResponse.message.content)
+    if let firstResponse = response.choices?.first {
+        history.append(firstResponse.message)
+        print(firstResponse.message.content)
+    }
 case .failure(let error):
     print(error.message)
 }
