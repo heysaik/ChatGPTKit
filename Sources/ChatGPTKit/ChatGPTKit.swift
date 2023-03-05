@@ -16,7 +16,7 @@ public struct ChatGPTKit {
         numberOfCompletions: Int = 1,
         presencePenalty: Double = 0,
         frequencePenalty: Double = 0
-    ) async throws -> Result<Response, Error> {
+    ) async throws -> Result<Response, APIError> {
         var convertedMessages = [[String:Any]]()
         for message in messages {
             convertedMessages.append(message.convertToDict())
@@ -28,7 +28,7 @@ public struct ChatGPTKit {
             "temperature": temperature,
             "top_p": topP,
             "n": numberOfCompletions,
-            "presence_penalty": presencePenalty,
+            "pAPresence_penalty": presencePenalty,
             "frequency_penalty": frequencePenalty
         ]
         
@@ -38,17 +38,36 @@ public struct ChatGPTKit {
                 let (data, _) = try await URLSession.shared.data(for: baseRequest)
                 do {
                     let response = try JSONDecoder().decode(Response.self, from: data)
-
                     return .success(response)
                 } catch {
-                    print(error)
-                    return .failure(error)
+                    // Try decoding as ResponseError type
+                    do {
+                        let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: data)
+                        return .failure(errorResponse.error)
+                    } catch {
+                        return .failure(
+                            APIError(
+                                message: error.localizedDescription,
+                                error: error
+                            )
+                        )
+                    }
                 }
             } catch {
-                return .failure(error)
+                return .failure(
+                    APIError(
+                        message: error.localizedDescription,
+                        error: error
+                    )
+                )
             }
-        case .failure(_):
-            return .failure(APIError.requestCreationFailed)
+        case .failure(let error):
+            return .failure(
+                APIError(
+                    message: error.localizedDescription,
+                    error: error
+                )
+            )
         }
     }
     
@@ -57,22 +76,21 @@ public struct ChatGPTKit {
         static let baseAPIURL = "https://api.openai.com/v1/chat/completions"
     }
     
-    private enum APIError: Error {
-        case invalidURL
-        case keyNotEntered
-        case couldNotReadParameters
-        case requestCreationFailed
-        case failedToParseData
-        case failedToGetData
-    }
-    
-    private func createRequest(with url: URL?, parameters: [String: Any]) async throws -> Result<URLRequest, Error> {
+    private func createRequest(with url: URL?, parameters: [String: Any]) async throws -> Result<URLRequest, APIError> {
         guard let apiURL = url else {
-            return .failure(APIError.invalidURL)
+            return .failure(
+                APIError(
+                    message: "Call made to an invalid URL"
+                )
+            )
         }
         
         guard let key = apiKey else {
-            return .failure(APIError.keyNotEntered)
+            return .failure(
+                APIError(
+                    message: "Call made to the OpenAI API using an invalid key"
+                )
+            )
         }
         
         do {
@@ -89,7 +107,11 @@ public struct ChatGPTKit {
             request.timeoutInterval = 30
             return .success(request)
         } catch {
-            return .failure(APIError.couldNotReadParameters)
+            return .failure(
+                APIError(
+                    message: "Could not serialize the URL request"
+                )
+            )
         }
     }
 }

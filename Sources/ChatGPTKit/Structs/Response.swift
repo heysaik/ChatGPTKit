@@ -7,16 +7,12 @@
 
 import Foundation
 
-public struct Response: Identifiable, Hashable, Equatable, Codable {
+public struct Response: Identifiable, Hashable, Codable {
     public var id: String
     public var object: String
     public var created: Int
     public var choices: [ResponseChoice]
     public var usage: APIUsage
-    
-    public static func == (lhs: Response, rhs: Response) -> Bool {
-        return lhs.id == rhs.id
-    }
     
     public init(id: String, object: String, created: Int, choices: [ResponseChoice], usage: APIUsage) {
         self.id = id
@@ -24,5 +20,11 @@ public struct Response: Identifiable, Hashable, Equatable, Codable {
         self.created = created
         self.choices = choices
         self.usage = usage
+    }
+}
+
+extension Response: Equatable {
+    public static func == (lhs: Response, rhs: Response) -> Bool {
+        return lhs.id == rhs.id
     }
 }

@@ -9,7 +9,7 @@ A very simple Swifty API to use ChatGPT from OpenAI. Please let me know if you f
 ## Usage
 ```swift
 let chattyGPT = ChatGPTKit(apiKey: "YOUR-API-KEY")
-var history = [ChatGPTKit.Message(role: .user, content: "Hello Swift ChatGPT")]
+var history = [Message(role: .system, content: "You are a bot designed to aid mental health."), Message(role: .user, content: "Hello! I'm feeling rather sad today.")]
 
 switch try await chattyGPT.performCompletions(messages: history) {
 case .success(let response):
@@ -17,7 +17,7 @@ case .success(let response):
     history.append(firstResponse.message)
     print(firstResponse.message.content)
 case .failure(let error):
-    print(error)
+    print(error.message)
 }
 ```
 
@@ -80,6 +80,31 @@ struct Response {
     var created: Int
     var choices: [ResponseChoice]
     var usage: APIUsage
+}
+```
+
+### APIError
+APIError is the default Error type this package returns. If the OpenAI API returns an error, it will be of this type and you can get the code, message, and type. If there is another error from the client side, you can read the error property to understand the error.
+```swift
+struct APIError: Error {
+    public var code: Int?
+    public var message: String
+    public var type: String?
+    public var error: Error?
+    
+    public init(code: Int? = nil, message: String, type: String? = nil, error: Error? = nil) {
+        self.code = code
+        self.message = message
+        self.type = type
+        self.error = error
+    }
+}
+```
+
+### ErrorResponse
+```swift
+struct ErrorResponse {
+    var error: APIError
 }
 ```
 
