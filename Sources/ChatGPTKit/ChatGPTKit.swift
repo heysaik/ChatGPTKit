@@ -14,23 +14,39 @@ public struct ChatGPTKit {
         temperature: Double = 1.0,
         topP: Double = 1.0,
         numberOfCompletions: Int = 1,
+        stop: [String]? = nil,
         presencePenalty: Double = 0,
-        frequencePenalty: Double = 0
+        frequencePenalty: Double = 0,
+        logitBias: [String : Int]? = nil,
+        user: String? = nil
     ) async throws -> Result<Response, APIError> {
         var convertedMessages = [[String:Any]]()
         for message in messages {
             convertedMessages.append(message.convertToDict())
         }
         
-        let parameters: [String: Any] = [
+        var parameters: [String: Any] = [
             "model": model.rawValue,
             "messages": convertedMessages,
             "temperature": temperature,
             "top_p": topP,
             "n": numberOfCompletions,
-            "pAPresence_penalty": presencePenalty,
+            "presence_penalty": presencePenalty,
             "frequency_penalty": frequencePenalty
         ]
+        
+        // Handling optionals
+        if let stop = stop {
+            parameters["stop"] = stop
+        }
+        
+        if let logitBias = logitBias {
+            parameters["logit_bias"] = logitBias
+        }
+        
+        if let user = user {
+            parameters["user"] = user
+        }
         
         switch try await createRequest(with: URL(string: Constants.baseAPIURL), parameters: parameters) {
         case .success(let baseRequest):

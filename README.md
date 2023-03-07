@@ -3,7 +3,7 @@ A very simple Swifty API to use ChatGPT from OpenAI. Please let me know if you f
 
 ## Installation
 1. In your Xcode project, go to File -> Add Packages
-2. Enter the package URL: `https://https://github.com/heysaik/ChatGPTKit`
+2. Enter the package URL: `https://github.com/heysaik/ChatGPTKit`
 3. Click on **Add Package** and let Xcode install the Swift Package
 
 ## Usage
